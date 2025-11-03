@@ -22,47 +22,6 @@
   }
 </style>
 
-<!-- Put this on your page BEFORE the script below -->
-<div id="webchat" style="width: 500px; height: 500px;"></div>
-
-<!-- In your <body> tag -->
-<script>
-  window.botpress.on("webchat:ready", () => {
-    window.botpress.open();
-  });
-  window.botpress.init({
-  "botId": "42b2562b-39cd-4c63-a606-1ebff50de78c",
-  "configuration": {
-    "version": "v2",
-    "composerPlaceholder": "Hỏi bất cứ điều gì về khai thác khoáng sản Lạng Sơn ",
-    "botName": "LANGSON24H",
-    "botAvatar": "https://files.bpcontent.cloud/2025/11/03/13/20251103130052-JILTAAZH.png",
-    "botDescription": "Tôi là LANGSON24H , 1 chatbot chuyên về nghiên cứu chủ đề khai thác khoáng sản tại tỉnh Lạng Sơn ,VIệt Nam",
-    "fabImage": "https://files.bpcontent.cloud/2025/11/03/13/20251103130052-JILTAAZH.png",
-    "website": {},
-    "email": {},
-    "phone": {},
-    "termsOfService": {},
-    "privacyPolicy": {},
-    "color": "#0e9845",
-    "variant": "solid",
-    "headerVariant": "glass",
-    "themeMode": "dark",
-    "fontFamily": "Roboto Slab",
-    "radius": 2.5,
-    "feedbackEnabled": true,
-    "footer": "[⚡ by Botpress](https://botpress.com/?from=webchat)",
-    "allowFileUpload": true,
-    "soundEnabled": true,
-    "proactiveMessageEnabled": false,
-    "proactiveBubbleMessage": "Bạn cần hỗ trợ gì chứ ?",
-    "proactiveBubbleTriggerType": "afterDelay",
-    "proactiveBubbleDelayTime": 10
-  },
-  "clientId": "185e8427-2422-4bb1-8166-7c66755dce44",
-  "selector": "#webchat"
-});
-</script>
 
 
 
@@ -138,7 +97,7 @@
       Đây là thành phần "dính" (sticky)
     -->
     <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <nav classs="container mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo / Tên dự án -->
                 <div class="flex-shrink-0">
@@ -477,7 +436,7 @@
     <!-- FOOTER -->
     <footer class="bg-primary text-white/70">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
-            <p classt="text-sm">
+            <p class="text-sm">
                 Sản phẩm thử nghiệm của nhóm . Vui lòng không sao chép dưới mọi hình thức.
             </p>
             <p class="text-xs mt-2">
@@ -639,7 +598,55 @@
             searchResult.classList.add('hidden');
         }
 
-    </script>
+        </script>
+
+        <!-- Botpress webchat container + init (moved from <head> to here to avoid layout issues) -->
+        <div id="webchat" style="position:fixed; bottom:24px; right:24px; width:360px; height:520px; z-index:9999; border-radius:8px; overflow:hidden;"></div>
+
+        <script>
+            // Ensure Botpress is ready before init; inject.js is loaded in <head>
+            window.botpress && window.botpress.on && window.botpress.on("webchat:ready", () => {
+                try {
+                    window.botpress.open();
+                } catch (e) {
+                    console.error('Botpress open error', e);
+                }
+            });
+
+            window.botpress && window.botpress.init && window.botpress.init({
+                "botId": "42b2562b-39cd-4c63-a606-1ebff50de78c",
+                "configuration": {
+                    "version": "v2",
+                    "composerPlaceholder": "Hỏi bất cứ điều gì về khai thác khoáng sản Lạng Sơn ",
+                    "botName": "LANGSON24H",
+                    "botAvatar": "https://files.bpcontent.cloud/2025/11/03/13/20251103130052-JILTAAZH.png",
+                    "botDescription": "Tôi là LANGSON24H , 1 chatbot chuyên về nghiên cứu chủ đề khai thác khoáng sản tại tỉnh Lạng Sơn ,VIệt Nam",
+                    "fabImage": "https://files.bpcontent.cloud/2025/11/03/13/20251103130052-JILTAAZH.png",
+                    "website": {},
+                    "email": {},
+                    "phone": {},
+                    "termsOfService": {},
+                    "privacyPolicy": {},
+                    "color": "#0e9845",
+                    "variant": "solid",
+                    "headerVariant": "glass",
+                    "themeMode": "dark",
+                    "fontFamily": "Roboto Slab",
+                    "radius": 2.5,
+                    "feedbackEnabled": true,
+                    "footer": "[⚡ by Botpress](https://botpress.com/?from=webchat)",
+                    "allowFileUpload": true,
+                    "soundEnabled": true,
+                    "proactiveMessageEnabled": false,
+                    "proactiveBubbleMessage": "Bạn cần hỗ trợ gì chứ ?",
+                    "proactiveBubbleTriggerType": "afterDelay",
+                    "proactiveBubbleDelayTime": 10
+                },
+                "clientId": "185e8427-2422-4bb1-8166-7c66755dce44",
+                "selector": "#webchat"
+            });
+        </script>
+
 </body>
 </html>
 
