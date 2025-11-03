@@ -1,58 +1,582 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự án Khoáng sản Lạng Sơn - Phiên bản Thị phạm</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tải Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Tải icon (cho thanh tìm kiếm) -->
+    <!-- SỬA LỖI: Đổi từ lucide-react sang lucide (thư viện JS thuần) -->
+    <script src="https://unpkg.com/lucide@0.294.0/dist/umd/lucide.min.js"></script>
 
-<!-- In your <head> tag -->
-<script src="https://cdn.botpress.cloud/webchat/v3.3/inject.js"></script>
-<style>
-  #webchat .bpWebchat {
-    position: unset;
-    width: 100%;
-    height: 100%;
-    max-height: 100%;
-    max-width: 100%;
-  }
+    <style>
+        /* CSS tùy chỉnh cho dự án */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA; /* Màu nền trắng xám */
+            color: #343A40; /* Màu chữ đen xám */
+        }
+        
+        /* Định nghĩa bảng màu "Xanh & Bền vững" cho Tailwind */
+        .tailwind-theme {
+            --color-primary: #2F684D; /* Xanh lá cây đậm */
+            --color-secondary: #89B96B; /* Xanh lá mạ */
+            --color-background: #F8F9FA;
+            --color-text: #343A40;
+            --color-muted: #6C757D; /* Màu xám cho chữ phụ */
+        }
+        
+        /* Áp dụng màu tùy chỉnh */
+        .bg-primary { background-color: var(--color-primary); }
+        .text-primary { color: var(--color-primary); }
+        .text-secondary { color: var(--color-secondary); }
+        .bg-secondary { background-color: var(--color-secondary); }
+        .text-muted { color: var(--color-muted); }
+        
+        /* Hiệu ứng cuộn mượt mà */
+        html {
+            scroll-behavior: smooth;
+        }
 
-  #webchat .bpFab {
-    display: none;
-  }
-</style>
+        /* Tùy chỉnh thanh cuộn (thẩm mỹ "cận chuyên nghiệp") */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-background);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-secondary);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary);
+        }
+        
+        /* Đánh dấu nội dung tìm kiếm */
+        .highlight {
+            background-color: #FFF3A3; /* Màu vàng highlight */
+            color: #333;
+            border-radius: 3px;
+            padding: 0 2px;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="tailwind-theme">
 
-<!-- Put this on your page BEFORE the script below -->
-<div id="webchat" style="width: 500px; height: 500px;"></div>
+    <!-- 
+      HEADER & NAVIGATION 
+      Đây là thành phần "dính" (sticky)
+    -->
+    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <nav classs="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo / Tên dự án -->
+                <div class="flex-shrink-0">
+                    <a href="#" class="flex items-center space-x-2">
+                        <!-- Icon lá cây - biểu tượng "Xanh & Bền vững" -->
+                        <svg class="h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"></path><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93l1.414 1.414"></path><path d="M17.66 17.66l1.414 1.414"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M4.93 19.07l1.414-1.414"></path><path d="M17.66 6.34l1.414-1.414"></path></svg>
+                        <span class="font-bold text-lg text-primary">Dự án Lạng Sơn</span>
+                    </a>
+                </div>
+                
+                <!-- Menu điều hướng (Desktop) -->
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                    <a href="#gioi-thieu" class="nav-link">Giới thiệu</a>
+                    <a href="#khoang-san" class="nav-link">Khoáng sản</a>
+                    <a href="#quy-trinh" class="nav-link">Quy trình</a>
+                    <a href="#thuc-trang" class="nav-link">Thực trạng</a>
+                    <a href="#giai-phap" class="nav-link">Giải pháp</a>
+                    <a href="#phan-tich" class="nav-link">Phân tích</a>
+                </div>
 
-<!-- In your <body> tag -->
-<script>
-  window.botpress.on("webchat:ready", () => {
-    window.botpress.open();
-  });
-  window.botpress.init({
-  "botId": "42b2562b-39cd-4c63-a606-1ebff50de78c",
-  "configuration": {
-    "version": "v2",
-    "composerPlaceholder": "Hỏi bất cứ điều gì về khai thác khoáng sản Lạng Sơn ",
-    "botName": "LANGSON24H",
-    "botAvatar": "https://files.bpcontent.cloud/2025/11/03/13/20251103130052-JILTAAZH.png",
-    "botDescription": "Tôi là LANGSON24H , 1 chatbot chuyên về nghiên cứu chủ đề khai thác khoáng sản tại tỉnh Lạng Sơn ,VIệt Nam",
-    "fabImage": "https://files.bpcontent.cloud/2025/11/03/13/20251103130052-JILTAAZH.png",
-    "website": {},
-    "email": {},
-    "phone": {},
-    "termsOfService": {},
-    "privacyPolicy": {},
-    "color": "#F38020",
-    "variant": "solid",
-    "headerVariant": "glass",
-    "themeMode": "dark",
-    "fontFamily": "Roboto Slab",
-    "radius": 2.5,
-    "feedbackEnabled": true,
-    "footer": "[⚡ by Botpress](https://botpress.com/?from=webchat)",
-    "allowFileUpload": true,
-    "soundEnabled": true,
-    "proactiveMessageEnabled": false,
-    "proactiveBubbleMessage": "Hi! 👋 Need help?",
-    "proactiveBubbleTriggerType": "afterDelay",
-    "proactiveBubbleDelayTime": 10
-  },
-  "clientId": "185e8427-2422-4bb1-8166-7c66755dce44",
-  "selector": "#webchat"
-});
-</script>
+                <!-- Thanh tìm kiếm (Chức năng động) -->
+                <div class="flex-1 max-w-xs ml-4">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="searchInput"
+                            placeholder="Tìm kiếm (ví dụ: đá vôi, chì...)" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition duration-300"
+                            onkeyup="handleSearch()"
+                        >
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i data-lucide="search" class="h-4 w-4 text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nút menu (Mobile) -->
+                <div class="sm:hidden flex items-center">
+                    <button id="mobileMenuButton" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-primary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <span class="sr-only">Mở menu</span>
+                        <i data-lucide="menu" class="h-6 w-6 block"></i>
+                        <i data-lucide="x" class="h-6 w-6 hidden"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Menu thả xuống (Mobile) -->
+            <div id="mobileMenu" class="sm:hidden hidden pb-3 space-y-1">
+                <a href="#gioi-thieu" class="nav-link-mobile">Giới thiệu</a>
+                <a href="#khoang-san" class="nav-link-mobile">Khoáng sản</a>
+                <a href="#quy-trinh" class="nav-link-mobile">Quy trình</a>
+                <a href="#thuc-trang" class="nav-link-mobile">Thực trạng</a>
+                <a href="#giai-phap" class="nav-link-mobile">Giải pháp</a>
+                <a href="#phan-tich" class="nav-link-mobile">Phân tích</a>
+            </div>
+        </nav>
+        <!-- Thanh tiến trình đọc (Reading Progress Bar) - chi tiết "cận chuyên nghiệp" -->
+        <div class="h-1 bg-secondary" id="progressBar" style="width: 0%;"></div>
+    </header>
+
+    <!-- NỘI DUNG CHÍNH CỦA TRANG -->
+    <main id="mainContent" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <!-- Thông báo kết quả tìm kiếm -->
+        <div id="searchResult" class="hidden sticky top-20 z-40 mb-4 p-4 bg-white shadow-lg rounded-lg text-center">
+            <span id="searchResultText" class="font-semibold"></span>
+            <button onclick="clearSearch()" class="ml-4 text-sm text-red-500 hover:underline">&times; Xóa tìm kiếm</button>
+        </div>
+
+        <!-- 
+          SECTION 1: GIỚI THIỆU CHUNG (PHẦN 1) 
+        -->
+        <section id="gioi-thieu" class="mb-16 md:mb-24">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Nội dung văn bản -->
+                <div class="prose max-w-none">
+                    <span class="text-secondary font-semibold uppercase tracking-wider">Phần 1: Tổng quan</span>
+                    <h1 class="text-4xl md:text-5xl font-bold text-primary mb-4">
+                        Tỉnh Lạng Sơn: Vị trí & Tiềm năng
+                    </h1>
+                    <p class="text-lg text-muted mb-6">
+                        Lạng Sơn là một tỉnh miền núi phía Bắc, nằm ở vùng Đông Bắc của Tổ quốc, đóng vai trò như cửa ngõ giao thương quốc tế trên hành lang kinh tế Nam Ninh – Lạng Sơn – Hà Nội – Hải Phòng.
+                    </p>
+                    <p>
+                        Với vị trí địa lý đặc biệt và địa hình đặc trưng bao quanh bởi các dãy núi đá vôi và thung lũng hẹp, Lạng Sơn được thiên nhiên ưu đãi, tạo điều kiện cho sự hình thành của nhiều loại khoáng sản quý giá, là nền tảng quan trọng cho phát triển công nghiệp.
+                    </p>
+                </div>
+                <!-- Hình ảnh (Sử dụng placeholder chất lượng cao) -->
+                <div class="rounded-lg shadow-xl overflow-hidden">
+                    <!-- Thay thế ảnh từ Word bằng ảnh placeholder chủ đề "Lạng Sơn" -->
+                    <img src="https://placehold.co/600x400/89B96B/FFFFFF?text=Ảnh+minh+họa+Lạng+Sơn" 
+                         alt="Hình ảnh minh họa tỉnh Lạng Sơn" 
+                         class="w-full h-auto object-cover">
+                </div>
+            </div>
+        </section>
+
+        <!-- 
+          SECTION 2: KHOÁNG SẢN CHỦ YẾU (PHẦN 2) 
+        -->
+        <section id="khoang-san" class="mb-16 md:mb-24">
+            <div class="text-center mb-12">
+                <span class="text-secondary font-semibold uppercase tracking-wider">Phần 2: Tài nguyên</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-primary">Các loại Khoáng sản Chủ yếu</h2>
+                <p class="text-lg text-muted mt-2 max-w-2xl mx-auto">
+                    Lạng Sơn có hơn 250 mỏ và điểm quặng với hơn 30 loại khoáng sản khác nhau, nổi bật là nguyên liệu cho ngành vật liệu xây dựng.
+                </p>
+            </div>
+            
+            <!-- Grid 3 cột cho 3 loại khoáng sản chính -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Thẻ 1: Đá vôi -->
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <img src="https://placehold.co/100x100/343A40/FFFFFF?text=Đá+vôi" alt="Đá vôi" class="h-20 w-20 object-cover rounded-full mx-auto mb-4">
+                    <h3 class="text-xl font-semibold text-primary mb-2 text-center">Đá vôi & Đá xi măng</h3>
+                    <p class="text-muted text-sm">
+                        Phân bố chủ yếu tại Hữu Lũng, Chi Lăng, Cao Lộc. Là nguyên liệu sản xuất xi măng, vôi công nghiệp. Sản lượng ước tính hàng triệu tấn mỗi năm.
+                    </p>
+                </div>
+                <!-- Thẻ 2: Sắt & Mangan -->
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <img src="https://placehold.co/100x100/343A40/FFFFFF?text=Sắt" alt="Quặng sắt" class="h-20 w-20 object-cover rounded-full mx-auto mb-4">
+                    <h3 class="text-xl font-semibold text-primary mb-2 text-center">Quặng Sắt & Mangan</h3>
+                    <p class="text-muted text-sm">
+                        Tập trung tại Bắc Sơn, Văn Quan. Nguyên liệu quan trọng cho ngành luyện kim. Trữ lượng đang dần suy giảm do khai thác thủ công.
+                    </p>
+                </div>
+                <!-- Thẻ 3: Chì & Kẽm -->
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <img src="https://placehold.co/100x100/343A40/FFFFFF?text=Chì" alt="Quặng chì" class="h-20 w-20 object-cover rounded-full mx-auto mb-4">
+                    <h3 class="text-xl font-semibold text-primary mb-2 text-center">Quặng Chì - Kẽm</h3>
+                    <p class="text-muted text-sm">
+                        Phân bố ở Bình Gia, Văn Lãng. Có giá trị kinh tế cao, được sử dụng trong sản xuất pin, sơn và các loại hợp kim đặc biệt.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 
+          SECTION 3: QUY TRÌNH KHAI THÁC (PHẦN 3) 
+          Infographic (CSS/HTML) thay vì ảnh sơ đồ chất lượng thấp
+        -->
+        <section id="quy-trinh" class="mb-16 md:mb-24 bg-white p-8 md:p-12 rounded-lg shadow-lg">
+            <div class="text-center mb-12">
+                <span class="text-secondary font-semibold uppercase tracking-wider">Phần 3: Nghiệp vụ</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-primary">Quy trình Khai thác & Chế biến</h2>
+                <p class="text-lg text-muted mt-2 max-w-2xl mx-auto">
+                    Một quy trình công nghiệp điển hình bao gồm 4 giai đoạn cốt lõi.
+                </p>
+            </div>
+
+            <!-- Infographic dạng dòng thời gian (timeline) -->
+            <div class="relative">
+                <!-- Đường kẻ nối -->
+                <div class="hidden md:block absolute left-1/2 top-0 h-full w-0.5 bg-primary/20" style="transform: translateX(-50%);"></div>
+
+                <!-- Giai đoạn 1 -->
+                <div class="relative mb-8 md:flex md:items-center md:justify-start">
+                    <div class="md:w-1/2 md:pr-8 md:text-right">
+                        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-secondary">
+                            <h3 class="text-xl font-bold text-primary">1. Thăm dò & Đánh giá</h3>
+                            <p class="text-muted mt-2">Kỹ sư địa chất dùng máy đo, khoan sâu vào lòng đất để xác định vị trí, độ sâu và chất lượng quặng.</p>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 md:pl-8"></div>
+                </div>
+                <!-- Giai đoạn 2 -->
+                <div class="relative mb-8 md:flex md:items-center md:justify-end">
+                    <div class="md:w-1/2 md:pr-8"></div>
+                    <div class="md:w-1/2 md:pl-8">
+                        <div class="bg-white p-6 rounded-lg shadow-md border-r-4 border-secondary md:border-r-0 md:border-l-4">
+                            <h3 class="text-xl font-bold text-primary">2. Khai thác & Tách khoáng</h3>
+                            <p class="text-muted mt-2">Sử dụng máy móc hạng nặng (máy xúc, khoan nổ) để vận chuyển quặng thô ra khỏi mỏ.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Giai đoạn 3 -->
+                <div class="relative mb-8 md:flex md:items-center md:justify-start">
+                    <div class="md:w-1/2 md:pr-8 md:text-right">
+                        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-secondary">
+                            <h3 class="text-xl font-bold text-primary">3. Chế biến & Tinh luyện</h3>
+                            <p class="text-muted mt-2">Quặng được đưa vào lò nung, tuyển nổi, hoặc xử lý hóa học (ví dụ: tách Chì (Pb) từ quặng PbS) để thu kim loại tinh khiết.</p>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 md:pl-8"></div>
+                </div>
+                <!-- Giai đoạn 4 -->
+                <div class="relative md:flex md:items-center md:justify-end">
+                    <div class="md:w-1/2 md:pr-8"></div>
+                    <div class="md:w-1/2 md:pl-8">
+                        <div class="bg-white p-6 rounded-lg shadow-md border-r-4 border-secondary md:border-r-0 md:border-l-4">
+                            <h3 class="text-xl font-bold text-primary">4. Vận chuyển & Phân phối</h3>
+                            <p class="text-muted mt-2">Sản phẩm hoàn thiện được đưa đến các nhà máy sản xuất xi măng, gốm sứ, luyện kim hoặc xuất khẩu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 
+          SECTION 4: THỰC TRẠNG (PHẦN 4) 
+        -->
+        <section id="thuc-trang" class="mb-16 md:mb-24">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Hình ảnh (Placeholder) -->
+                <div class="rounded-lg shadow-xl overflow-hidden order-last md:order-first">
+                    <img src="https://placehold.co/600x400/2F684D/FFFFFF?text=Thực+trạng+khai+thác" 
+                         alt="Thực trạng khai thác khoáng sản" 
+                         class="w-full h-auto object-cover">
+                </div>
+                <!-- Nội dung văn bản -->
+                <div class="prose max-w-none">
+                    <span class="text-secondary font-semibold uppercase tracking-wider">Phần 4: Thách thức</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4">
+                        Thực trạng & Bất cập
+                    </h2>
+                    <p class="text-lg text-muted mb-6">
+                        Hoạt động khai thác khoáng sản đóng góp lớn cho ngân sách tỉnh và tạo việc làm, nhưng cũng đang đối mặt với nhiều bất cập lớn.
+                    </p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>
+                            <strong class="text-primary">Công nghệ lạc hậu:</strong> Khai thác chủ yếu là thủ công, gây lãng phí tài nguyên nghiêm trọng.
+                        </li>
+                        <li>
+                            <strong class="text-primary">Ô nhiễm môi trường:</strong> Bụi, tiếng ồn, và nước thải ảnh hưởng trực tiếp đến đất nông nghiệp và nguồn nước sinh hoạt.
+                        </li>
+                        <li>
+                            <strong class="text-primary">Thiếu quy hoạch dài hạn:</strong> Khai thác tràn lan gây mất cảnh quan du lịch và tiềm ẩn nguy cơ sạt lở.
+                        </li>
+                        <li>
+                            <strong class="text-primary">Giá trị gia tăng thấp:</strong> Phần lớn khoáng sản vẫn xuất thô, chưa qua tinh chế, làm giảm giá trị kinh tế.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 
+          SECTION 5: GIẢI PHÁP (PHẦN 5) 
+        -->
+        <section id="giai-phap" class="mb-16 md:mb-24">
+            <div class="text-center mb-12">
+                <span class="text-secondary font-semibold uppercase tracking-wider">Phần 5: Tầm nhìn</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-primary">Giải pháp Sáng tạo & Bền vững</h2>
+                <p class="text-lg text-muted mt-2 max-w-2xl mx-auto">
+                    Để cân bằng giữa phát triển kinh tế và bảo vệ môi trường, các giải pháp công nghệ và quy hoạch là bắt buộc.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Giải pháp 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center border-t-4 border-secondary">
+                    <i data-lucide="cpu" class="h-12 w-12 text-secondary mx-auto mb-4"></i>
+                    <h3 class="text-xl font-semibold text-primary mb-2">Công nghệ & Chuyển đổi số</h3>
+                    <p class="text-muted text-sm">
+                        Ứng dụng AI, 3D scanning trong thăm dò. Sử dụng máy móc tự động để tăng hiệu quả và giảm thiểu rủi ro tai nạn.
+                    </p>
+                </div>
+                <!-- Giải pháp 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center border-t-4 border-secondary">
+                    <i data-lucide="factory" class="h-12 w-12 text-secondary mx-auto mb-4"></i>
+                    <h3 class="text-xl font-semibold text-primary mb-2">Phát triển Chế biến sâu</h3>
+                    <p class="text-muted text-sm">
+                        Xây dựng nhà máy xi măng, gốm sứ, luyện kim tại chỗ. Tạo chuỗi giá trị khép kín thay vì chỉ xuất thô.
+                    </p>
+                </div>
+                <!-- Giải pháp 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center border-t-4 border-secondary">
+                    <i data-lucide="mountain" class="h-12 w-12 text-secondary mx-auto mb-4"></i>
+                    <h3 class="text-xl font-semibold text-primary mb-2">Du lịch Sinh thái Mỏ</h3>
+                    <p class="text-muted text-sm">
+                        Biến các mỏ đá cũ, đã khai thác xong, thành điểm du lịch, khu nghiên cứu địa chất, tạo giá trị giáo dục và thu nhập bền vững.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 
+          SECTION 6: PHÂN TÍCH (PHẦN 6) 
+          Nâng cấp Ưu/Nhược điểm thành Phân tích SWOT (chuyên nghiệp hơn)
+        -->
+        <section id="phan-tich" class="mb-16 md:mb-24 bg-white p-8 md:p-12 rounded-lg shadow-lg">
+            <div class="text-center mb-12">
+                <span class="text-secondary font-semibold uppercase tracking-wider">Phần 6: Phân tích</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-primary">Phân tích SWOT (Điểm mạnh - Yếu - Cơ hội - Thách thức)</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Cột 1: S & W (Nội tại) -->
+                <div>
+                    <!-- Điểm mạnh (S) -->
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-semibold text-green-700 mb-3">Điểm mạnh (Strengths)</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-muted">
+                            <li>Nguồn tài nguyên khoáng sản đa dạng, trữ lượng lớn (đá vôi).</li>
+                            <li>Vị trí địa lý thuận lợi, là cửa ngõ giao thương.</li>
+                            <li>Nguồn lao động địa phương dồi dào.</li>
+                        </ul>
+                    </div>
+                    <!-- Điểm yếu (W) -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-red-700 mb-3">Điểm yếu (Weaknesses)</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-muted">
+                            <li>Công nghệ khai thác lạc hậu, thủ công.</li>
+                            <li>Giá trị gia tăng thấp (chủ yếu xuất thô).</li>
+                            <li>Hạ tầng logistics và chế biến sâu chưa phát triển.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Cột 2: O & T (Bên ngoài) -->
+                <div>
+                    <!-- Cơ hội (O) -->
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-semibold text-blue-700 mb-3">Cơ hội (Opportunities)</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-muted">
+                            <li>Nhu cầu vật liệu xây dựng và công nghiệp nặng tăng cao.</li>
+                            <li>Chính sách khuyến khích ứng dụng công nghệ xanh và chế biến sâu.</li>
+                            <li>Xu hướng phát triển du lịch sinh thái, du lịch mỏ.</li>
+                        </ul>
+                    </div>
+                    <!-- Thách thức (T) -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-yellow-700 mb-3">Thách thức (Threats)</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-muted">
+                            <li>Yêu cầu ngày càng khắt khe về bảo vệ môi trường.</li>
+                            <li>Nguy cơ cạn kiệt tài nguyên nếu không quy hoạch tốt.</li>
+                            <li>Cạnh tranh từ các nguồn vật liệu thay thế và các khu vực khác.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-primary text-white/70">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+            <p classt="text-sm">
+                Sản phẩm thị phạm thuộc Dự án Kỹ thuật Phần mềm (Phiên bản MVP).
+            </p>
+            <p class="text-xs mt-2">
+                Nội dung dựa trên "Tài liệu 1: Thực trạng khai thác khoáng sản tại tỉnh Lạng Sơn".
+            </p>
+        </div>
+    </footer>
+
+    <!-- 
+      JAVASCRIPT 
+      (Phần "động" của trang web)
+    -->
+    <script>
+        // --- BIẾN TOÀN CỤC CHO CÁC HÀM ---
+        // (Các hàm này phải ở scope toàn cục để onkeyup/onclick gọi được)
+        const searchInput = document.getElementById('searchInput');
+        const mainContent = document.getElementById('mainContent');
+        const searchResult = document.getElementById('searchResult');
+        const searchResultText = document.getElementById('searchResultText');
+        let originalContent = ''; // Sẽ được gán giá trị khi DOM tải xong
+
+        // --- CHỨC NĂNG THIẾT LẬP (CHẠY KHI TẢI TRANG) ---
+        // (Sửa lỗi: Bọc các hành động khởi tạo trong DOMContentLoaded)
+        document.addEventListener('DOMContentLoaded', () => {
+            // Khởi tạo các icons của Lucide
+            // (Sửa lỗi: Bây giờ 'lucide' object đã tồn tại)
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.error('Lỗi: Thư viện Lucide không thể tải.');
+            }
+
+            // (Sửa lỗi: Gán nội dung gốc sau khi DOM đã tải xong)
+            if(mainContent) {
+                originalContent = mainContent.innerHTML;
+            }
+
+            // Xử lý Menu Mobile
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuIcon = mobileMenuButton.querySelector('[data-lucide="menu"]');
+            const xIcon = mobileMenuButton.querySelector('[data-lucide="x"]');
+
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    menuIcon.classList.toggle('hidden');
+                    xIcon.classList.toggle('hidden');
+                });
+            }
+
+            // Đóng menu mobile khi bấm vào link
+            document.querySelectorAll('.nav-link-mobile').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    menuIcon.classList.remove('hidden');
+                    xIcon.classList.add('hidden');
+                });
+            });
+
+            // Xử lý thanh tiến trình đọc (Reading Progress Bar)
+            const progressBar = document.getElementById('progressBar');
+            if (progressBar) {
+                window.addEventListener('scroll', () => {
+                    const scroll = window.scrollY || window.pageYOffset;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    progressBar.style.width = (scroll / height) * 100 + '%';
+                });
+            }
+
+            // Xử lý thanh điều hướng mượt mà (cho class .nav-link)
+            document.querySelectorAll('.nav-link').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        // Tính toán vị trí cuộn (trừ đi chiều cao của header)
+                        const headerOffset = 80; // 80px (chiều cao header + khoảng đệm)
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                        });
+                    }
+                });
+            });
+        });
+
+        
+        // --- CHỨC NĂNG TÌM KIẾM (ĐỘNG) ---
+        
+        // Hàm chuẩn hóa text (bỏ dấu tiếng Việt, chuyển chữ thường)
+        function normalizeText(text) {
+            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        }
+
+        // Hàm xử lý tìm kiếm
+        function handleSearch() {
+            let query = searchInput.value;
+            
+            // Khôi phục nội dung gốc trước mỗi lần tìm kiếm mới
+            // (Sửa lỗi: Đảm bảo originalContent đã được gán)
+            if (!originalContent && mainContent) {
+                 originalContent = mainContent.innerHTML;
+            }
+            mainContent.innerHTML = originalContent;
+            
+            if (query.length < 2) {
+                searchResult.classList.add('hidden');
+                return; // Chỉ tìm khi gõ ít nhất 2 ký tự
+            }
+
+            let normalizedQuery = normalizeText(query);
+            let count = 0;
+            
+            // Duyệt qua tất cả các thẻ <section>
+            const sections = mainContent.querySelectorAll('section');
+            sections.forEach(section => {
+                let sectionText = section.innerText;
+                let normalizedSectionText = normalizeText(sectionText);
+
+                if (normalizedSectionText.includes(normalizedQuery)) {
+                    // Tạo biểu thức Regex để tìm kiếm (không phân biệt hoa thường, toàn cầu)
+                    // Chúng ta tìm kiếm trên văn bản gốc (query) chứ không phải văn bản đã chuẩn hóa
+                    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                    
+                    // Đếm số lần xuất hiện
+                    const matches = section.innerHTML.match(regex);
+                    if (matches) {
+                        count += matches.length;
+                    }
+
+                    // Highlight
+                    section.innerHTML = section.innerHTML.replace(
+                        regex, 
+                        '<span class="highlight">$1</span>'
+                    );
+                }
+            });
+
+            // Hiển thị kết quả
+            if (count > 0) {
+                searchResultText.textContent = `Tìm thấy ${count} kết quả cho "${query}".`;
+                searchResult.classList.remove('hidden');
+            } else {
+                searchResultText.textContent = `Không tìm thấy kết quả nào cho "${query}".`;
+                searchResult.classList.remove('hidden');
+            }
+        }
+
+        // Hàm xóa tìm kiếm
+        function clearSearch() {
+            mainContent.innerHTML = originalContent; // Khôi phục nội dung gốc
+            searchInput.value = '';
+            searchResult.classList.add('hidden');
+        }
+
+    </script>
+</body>
+</html>
+
