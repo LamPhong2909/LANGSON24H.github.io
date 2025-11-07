@@ -600,20 +600,16 @@
 
         </script>
 
-        <!-- Botpress webchat container + init (moved from <head> to here to avoid layout issues) -->
+        <!-- Botpress webchat container + robust init (moved from <head> to here to avoid layout issues) -->
         <div id="webchat" style="position:fixed; bottom:24px; right:24px; width:360px; height:520px; z-index:9999; border-radius:8px; overflow:hidden;"></div>
 
         <script>
-            // Ensure Botpress is ready before init; inject.js is loaded in <head>
-            window.botpress && window.botpress.on && window.botpress.on("webchat:ready", () => {
-                try {
-                    window.botpress.open();
-                } catch (e) {
-                    console.error('Botpress open error', e);
-                }
-            });
-
-            window.botpress && window.botpress.init && window.botpress.init({
+        // --- ROBUST BOTPRESS INITIALIZATION + CUSTOM FAB ---
+        // This code polls for window.botpress (avoids race conditions), registers
+        // a webchat:ready handler, hides built-in FAB to avoid duplicates, and
+        // creates an immediately-clickable custom FAB that calls botpress.open().
+        (function() {
+            const BOT_CONFIG = {
                 "botId": "42b2562b-39cd-4c63-a606-1ebff50de78c",
                 "configuration": {
                     "version": "v2",
@@ -644,7 +640,84 @@
                 },
                 "clientId": "185e8427-2422-4bb1-8166-7c66755dce44",
                 "selector": "#webchat"
-            });
+            };
+
+            function createCustomFab() {
+                if (document.getElementById('customBotBtn')) return;
+                const btn = document.createElement('button');
+                btn.id = 'customBotBtn';
+                btn.setAttribute('aria-label', 'Trợ lý LANGSON24H');
+                btn.title = 'Trợ lý LANGSON24H';
+                btn.innerHTML = '<img src="' + BOT_CONFIG.configuration.botAvatar + '" alt="LANGSON24H" style="width:44px;height:44px;border-radius:50%;">';
+                Object.assign(btn.style, {
+                    position: 'fixed',
+                    right: '24px',
+                    bottom: '24px',
+                    zIndex: '10001',
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '9999px',
+                    background: '#ffffff',
+                    border: '0',
+                    padding: '6px',
+                    boxShadow: '0 6px 18px rgba(0,0,0,0.12)',
+                    cursor: 'pointer'
+                });
+                btn.addEventListener('click', () => {
+                    if (window.botpress && typeof window.botpress.open === 'function') {
+                        try { window.botpress.open(); }
+                        catch (e) { console.error('Lỗi khi mở webchat', e); }
+                    } else {
+                        console.warn('Botpress chưa sẵn sàng. Đang cố gắng khởi tạo...');
+                        tryInitImmediate();
+                    }
+                });
+                document.body.appendChild(btn);
+            }
+
+            function hideBuiltInFab() {
+                try {
+                    const selectors = ['.bpFab', '.bp-floating-button', '.botpress-floating-button', '[data-bp-fab]'];
+                    selectors.forEach(sel => document.querySelectorAll(sel).forEach(el => el.style.display = 'none'));
+                } catch (e) { /* ignore */ }
+            }
+
+            function tryInitImmediate() {
+                if (window.botpress && typeof window.botpress.init === 'function') {
+                    try {
+                        if (typeof window.botpress.on === 'function') {
+                            window.botpress.on('webchat:ready', hideBuiltInFab);
+                        }
+                        window.botpress.init(BOT_CONFIG);
+                    } catch (e) { console.error('Botpress init error (immediate)', e); }
+                }
+            }
+
+            const intervalMs = 200;
+            const timeoutMs = 10000;
+            let elapsed = 0;
+            const poll = setInterval(() => {
+                elapsed += intervalMs;
+                if (window.botpress) {
+                    clearInterval(poll);
+                    if (typeof window.botpress.on === 'function') {
+                        window.botpress.on('webchat:ready', () => {
+                            hideBuiltInFab();
+                            // window.botpress.open(); // optional auto-open
+                        });
+                    }
+                    try {
+                        window.botpress.init(BOT_CONFIG);
+                    } catch (e) { console.error('Botpress init failed after ready', e); }
+                } else if (elapsed >= timeoutMs) {
+                    clearInterval(poll);
+                    console.warn('Botpress did not become available after', timeoutMs, 'ms. Check network/CSP or CDN blocking inject.js');
+                }
+            }, intervalMs);
+
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', createCustomFab);
+            else createCustomFab();
+        })();
         </script>
 
 </body>
